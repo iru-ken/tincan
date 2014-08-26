@@ -1,0 +1,310 @@
+<script>
+//translation phrases - CAREFULLY edit per language
+///////////////////////////////////////////////////
+
+var courseTitle = "{edit in Look&Feel:Advanced:Header}";
+
+//Click Play to watch video...
+var click1 = "Click";
+var click2 = "Play";
+var click3 = "to watch video...";
+
+var nameForPrev = "Previous";
+var shortNameForPrev = "Prev";
+var nameForNext = "Next";
+var shortNameForNext = "Next";
+
+//Please answer the following question and then click Next.
+var errorText = "Please answer the following question and then click Next.";
+
+//Click to hide this message.
+var clickToHideText = "Click to hide this message.";
+
+//Please answer this question.
+var errorMessageText = "Please answer this question.";
+
+//video indexing of Vimeo file IDs - count starts at zero(0)
+var videoPath = [];
+
+//replace with the vimeo file number from the vimeo URL.
+//For example: 
+//https://vimeo.com/86727859 number is 86727859
+
+videoPath[0] = 86727859; //<<this is the number
+
+</script><!--DO NOT MODIFY HTML-->
+<div id="newhead">
+<div id="titlebar">&nbsp;</div>
+
+<div id="newbuttons"><input class="newNextButton" id="NextButton" name="NextButton" onclick="nextButtonClick(event)" title="Next" type="submit" value="Next" /> <input class="newPreviousButton" id="PreviousButton" name="PreviousButton" onclick="prevousButtonClick(event)" title="Previous" type="submit" value="Previous" /></div>
+<!--DO NOT MODIFY HTML--><script>
+//02252014 - Version 1151AM
+
+/*DO NOT MODIFY BELOW THIS LINE*/
+
+function nextButtonClick(event){
+    if ($.postData){
+        $.postData = false;
+        postActivity();
+    } 
+    
+    Qualtrics.SurveyEngine.navClick(event, 'NextButton');
+}
+    
+function prevousButtonClick(event){
+    //console.log("Previous");
+    Qualtrics.SurveyEngine.navClick(event, 'PreviousButton');
+}
+
+$.lastpage = false;
+$.postData = false;
+
+var clickToPlayText = "<font class='playfont1'>"
+  clickToPlayText += click1;
+  clickToPlayText += "</font> <font class='playfont2'>";
+  clickToPlayText += click2;
+  clickToPlayText += "</font> <font class='playfont1'>";
+  clickToPlayText += click3;
+  clickToPlayText += "</font>";
+
+  $.iconsrc ="https://irco.qualtrics.com/CP/Graphic.php?IM=IM_1BLJoCgozNPZI21";
+
+  $.ismobile = false;
+
+  if( navigator.userAgent.match(/Android/i)
+    || navigator.userAgent.match(/webOS/i)
+    || navigator.userAgent.match(/iPhone/i)
+    || navigator.userAgent.match(/iPod/i)
+    || navigator.userAgent.match(/BlackBerry/i)
+    || navigator.userAgent.match(/Windows Phone/i)
+   ){
+    $.ismobile = true;
+  }
+
+/*===================================*/
+// Add jQuery libraries
+var jQuery;
+var script_tag_loaded = false;
+var uiscript_tag_loaded = false;
+var link_tag_loaded = false;
+
+ /******** Load jQuery if not present *********/
+var libIndex = 0;
+var libArray = [];
+
+//libArray[libIndex] = "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js";
+
+ /******** Load jQuery if not present *********/
+if (window.jQuery === undefined || window.jQuery.fn.jquery !== '1.10.2') {
+    loadScript();
+} else {
+    jQuery = window.jQuery;
+    main();
+}
+
+var loadIndex = 0;
+
+function loadScript(){
+    //console.log("checkpt_2" + ":" + loadIndex);
+
+    var script_tag = document.createElement('script');
+    script_tag.setAttribute("type","text/javascript");
+    script_tag.setAttribute("src", "https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js");
+    if (script_tag.readyState) {
+        script_tag.onreadystatechange = function () { // For old versions of IE
+          if (this.readyState == 'complete' || this.readyState == 'loaded') {
+            script_tag_loaded = true;
+            scriptLoadHandler();
+          }
+        };
+    } else { // Other browsers
+        script_tag.onload = scriptLoadHandler;
+    }
+    
+    (document.getElementsByTagName("head")[0] || document.documentElement).appendChild(script_tag);
+}
+    
+function scriptLoadHandler() {
+    jQuery = window.jQuery.noConflict(true);
+    console.log("checkPoint_ready");
+    main();
+}
+
+function main() { 
+    jQuery(document).ready(function($) { 
+        // We can use jQuery 1.10.2 here
+
+        $(window).resize(function(){
+           var prev = document.getElementById('PreviousButton');
+           var nxt = document.getElementById('NextButton');
+
+           resizeNextPreviousButtons(prev, nxt);
+
+           /* get window size */
+           /* nxt.value = "S: " + $(window).width();*/
+        });
+      
+        modifyUI();
+   });
+ }
+
+function iruDisplayVideo(videoSrc){
+  var videoframe = $('videoiFrame');
+  
+  var vp = "https://player.vimeo.com/video/" + videoPath[videoSrc] + "?autoplay=1";
+  
+  videoframe.src = vp;
+
+  clickToPlayElement = $('playfont');
+  clickToPlayElement.innerHTML = clickToPlayText;
+
+  if (navigator.userAgent.match(/iPad/i)) {
+	clickToPlayElement.style.visibility = "visible";
+  }
+}
+
+function modifyUI() {
+
+  var ct = document.getElementById('titlebar');
+  ct.innerHTML = "<span id='coursetitle'>" + courseTitle + "</span>";
+
+  var pb = $('ProgressBar');
+  var sc = $('titlebar');
+  Element.insert(sc, {bottom:pb});
+
+  pb.style.visibility = "visible";
+
+  var elem = document.getElementsByClassName("END_OF_SURVEY EndOfSurvey BorderColor");
+
+  var prev = $('PreviousButton');
+  var nxt = $('NextButton');
+
+  resizeNextPreviousButtons(prev, nxt);
+
+  prev.style.visibility = "hidden";
+  nxt.style.visibility = "hidden"; 
+    
+  if(elem.length <= 0){
+     
+    if (!($.firstpage)) {
+        prev.style.visibility = "visible";
+    }
+    $.firstpage = false;
+    
+    nxt.style.visibility = "visible";
+
+    if ($.lastpage) {
+        nxt.style.visibility = "hidden";
+    } 
+
+    $.lastpage = false;
+  }
+}
+
+function resizeNextPreviousButtons(prev, nxt){
+  var skinWidth = $('SkinContent').offsetWidth;
+
+  if ($.ismobile || (skinWidth < 480)) {
+    prev.value = shortNameForPrev;
+    nxt.value = shortNameForNext;
+  } else {
+    prev.value = nameForPrev;
+    nxt.value = nameForNext;
+  }
+}
+
+//------------------------------
+
+function iruQuestionFormat(targetObject, autoadvance){
+
+  var elems = document.getElementsByClassName('HeaderValidationError');
+
+  if (elems.length>0){
+	  var errorMsg = document.getElementsByClassName('ValidationError');
+
+      if (errorMsg.length>0){
+
+	errorMsg[0].innerHTML = errorMessageText;
+      }
+	  
+	var elem=elems[0];
+
+	elem.children[0].innerHTML = errorText;
+        elem.children[1].children[0].children[1].style.visibility = "hidden";
+
+        elem.children[1].children[0].children[0].innerHTML = clickToHideText;
+
+	elem.children[1].children[0].children[0].onclick = function(){
+                QualtricsSETools.scrollToDiv('validationError_1');
+		elem.style.visibility = "hidden";
+		}
+  }
+  
+  //auto advance to next question when any radio button answer clicked
+  if (autoadvance)
+  {
+			
+  	targetObject.questionclick = function(event,element)
+  	{ 
+    		if (element.type == 'radio') 
+    		{ 
+                        var elem = document.getElementsByClassName("ProgressBarContainer");
+                        if (elem.length > 0){
+                           var progress = elem[0].getAttribute("aria-valuenow");
+                           parent.postMessage(progress, '*');
+                        }    
+      		        targetObject.clickNextButton();
+  		} 
+  	}
+  } else {
+          
+	targetObject.questionclick = function(event,element)
+  	{ 
+        console.log("button click");
+    
+    		if (element.type == 'radio') 
+    		{ 
+                console.log("radio click");
+                
+                postActivity();
+                
+                parent.postMessage('complete', '*');
+                
+      			targetObject.clickNextButton();
+        }
+  	}             
+  }
+}
+
+function iruAnswerFormat(){
+    var txt = $('answerman');
+    var icon = $('iconman');
+    
+    icon.src= $.iconsrc;
+    
+    txt.parentNode.insertBefore(document.createElement("HR"),txt.parentNode.childNodes[0]);
+
+    icon.style.visibility = "visible";
+    txt.style.visibility = "visible";
+}
+
+//Create an instance of the Tin Can Library
+function postActivity(){
+     //Set the default actor
+    var embeddedDataEmail  = "${e://Field/sp_email}";
+    var embeddedDataFirstName  = "${e://Field/sp_firstname}";
+    var embeddedDataLastName  = "${e://Field/sp_lastname}";
+    
+    var rootURL = "https://googledrive.com/host/0B7tikYn2JKu2OGJsOUl3cGI0dk0";
+    //var rootURL = "receive.htm";
+    var newURL = "";
+    newURL = rootURL + "?sp_firstname=" + embeddedDataFirstName;
+    newURL = newURL + "&sp_lastname=" + embeddedDataLastName;
+    newURL = newURL + "&sp_email=" + embeddedDataEmail;
+    newURL = newURL + "&sp_verb=read";
+    newURL = newURL + "&sp_activity=qualtrics part 3";
+    newURL = newURL + "&sp_activitydescription=webquest";
+
+    window.open(newURL, "_blank", 'toolbar=no,status=yes,menubar=no,scrollbars=no,resizable=no,left=1, top=1, width=300, height=10, visible=none');
+}
+</script></div>

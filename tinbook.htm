@@ -1,0 +1,220 @@
+<!-- 
+=============COPYRIGHT============ 
+Tin Book - An I-Read-This prototype for Tin Can API
+Copyright (C) 2012  Andrew Downes
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, version 3.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+<http://www.gnu.org/licenses/>.
+	
+=============CREDITS============ 
+Thanks to Rustici Software for provision of TCDriver.js which powers
+the calls to the Tin Can API and for developing the Tin Can API 
+TCDriver.js is reproduced here by permission under the understanding that 
+it is still a prototype. It comes from the prototype package found at:
+http://scorm.com/project-tin-can-phase-3-prototyping-tin-can-content-outside-of-the-lms/
+
+=============DEVELOPMENT STATUS============
+This software is currently in development and is NOT intended to be used
+in a live situation. 
+
+-->
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>I Read This</title>
+		<style>
+			body { 
+			 background: #d5d4d1; 
+			 text-align: center;
+			 font-family: Georgia, Serif;
+			}
+			.bookElement
+			{
+				text-align: left;
+				background: #fff; 
+				margin:1em auto;
+				width:700px;
+				padding:1em;
+			}
+			.bookElement span
+			{
+				width:600px;
+			}
+			.title
+			{
+				font-size:larger;
+				font-weight:bold;
+				display:block;
+			}
+			.authors, .publisher, .publishedDate
+			{
+				display:block;
+			}
+			
+			.IReadThisButton
+			{
+				float: right;
+				width: 75px !important;
+				font-size: 16pt;
+				font-weight: bold;
+				color: #FF4545;
+				text-align: center;
+				cursor:pointer;
+			}
+			.instructions
+			{
+				display:block;
+			}
+			.YouRead
+			{
+				color: #FF4545;
+				font-size:larger;
+				font-weight:bold;
+				display:block;
+				margin:0px 10px;
+			}
+			
+		</style>
+		<!-- jquery  -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        
+		<!--https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE is the iru.learning.technology google drive library-->
+        
+		<!-- Rustici's Tin Can functions - call these to access the Tin Can API-->
+		<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/TinCan.js"></script>
+		<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/Utils.js"></script>
+		<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/LRS.js"></script>
+		<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/AgentAccount.js"></script>
+		<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/Agent.js"></script>
+		<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/Group.js"></script>
+		<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/Verb.js"></script>
+		<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/Result.js"></script>
+		<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/Score.js"></script>
+		<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/Context.js"></script>
+		<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/ContextActivities.js"></script>
+		<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/Activity.js"></script>
+		<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/InteractionComponent.js"></script>
+		<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/ActivityDefinition.js"></script>
+		<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/ActivityProfile.js"></script>
+		<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/StatementRef.js"></script>
+		<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/SubStatement.js"></script>
+		<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/Statement.js"></script>
+		<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/StatementsResult.js"></script>
+		<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/State.js"></script>
+		
+		<!-- Base64 -->
+		<script src="http://tin-can-can.googlecode.com/files/base64.js"></script>
+		
+		<!-- TinCanCan - main js file for this wrapper -->
+		<script type="text/javascript">
+        
+        /*
+        =============COPYRIGHT============ 
+        Tin Book - An I-Read-This prototype for Tin Can API
+        Copyright (C) 2012  Andrew Downes
+
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, version 3.
+
+        This program is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+        <http://www.gnu.org/licenses/>.
+        */
+
+        //Create an instance of the Tin Can Library
+        var myTinCan = new TinCan();
+
+        myTinCan.enableDebug = 1;
+
+        //Create an LRS and add to the list of record stores https://cloud.scorm.com/tc/BVRODUFK9Z/sandbox/   https://cloud.scorm.com/ScormEngineInterface/TCAPI/public/
+        var myLRS = new TinCan.LRS({
+            endpoint: "https://cloud.scorm.com/tc/BVRODUFK9Z/", 
+            version: "1.0.0",
+            auth: 'Basic ' + Base64.encode("iru_learning_technology@irco.com" + ':' + "Scorm2014")
+        });
+        myTinCan.recordStores[0] = myLRS;
+
+        //Set the default actor
+        var myActor = new TinCan.Agent({
+            name : "William Bell",
+            mbox : "mailto:iru_learning_technology@irco.com"
+        });
+
+        myTinCan.actor = myActor;
+
+
+        function postActivity(){
+            /*============SEND STATEMENT==============*/
+            //Create the verb
+            var myVerb = new TinCan.Verb({
+                id : "http://www.tincanapi.co.uk/wiki/verbs:read",
+                display : {
+                    "en-US":"read", 
+                    "en-GB":"read"
+                }
+            });
+
+            //Create the activity definition
+            var myActivityDefinition = new TinCan.ActivityDefinition({
+                name : {
+                    "en-US":"Qualtrics Title", 
+                    "en-GB":"Qualtrics Title"
+                },
+                description : {
+                    "en-US":"Qualtrics Description", 
+                    "en-GB":"Qualtrics Description"
+                }
+            });
+
+            //Create the activity
+            var myActivity = new TinCan.Activity({
+                id : "https://googledrive.com/host/0B8viMMnsLq_PUktkdGJPQzZlZ3c/TinCan.js",
+                definition : myActivityDefinition
+            });
+
+            //create the statement
+            var stmt = new TinCan.Statement({
+                actor : myActor,
+                verb : myVerb,
+                target : myActivity
+            },true);
+
+            //tin-can post with callback function
+            myTinCan.sendStatement(stmt, function() {
+                /*============DISPLAY SENT DATA==============*/
+                alert("Statement reported to LRS. Refresh this page to start again!");
+            });
+            /*============END DISPLAY SENT DATA==============*/
+          }
+          /*============END SEND STATEMENT==============*/
+        
+        </script>
+
+	</head>
+	<body >
+	<h1>I Read This</h1>
+	<p>Search for a book, then click the correct entry to report to the LRS</p>
+	
+	<div id="content">
+	<a href="javascript: postActivity();">click here</a>
+	</div>
+		
+		
+		<noscript>
+			This course requires JavaScript to be enabled in your browser. Please enable JavaScript, then relaunch the course.
+		</noscript>
+		
+		
+
+	</body>
+</html>

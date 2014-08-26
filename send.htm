@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>I Read This</title>
+	</head>
+    <script>
+    
+        function buildURL(){
+            var rootURL = "https://googledrive.com/host/0B7tikYn2JKu2OGJsOUl3cGI0dk0";
+            //var rootURL = "receive.htm"; https://drive.google.com/file/d/0B7tikYn2JKu2OGJsOUl3cGI0dk0/edit?usp=sharing
+            var newURL = "";
+            newURL = rootURL + "?sp_firstname=Ken";
+            newURL = newURL + "&sp_lastname=Hubbell";
+            newURL = newURL + "&sp_email=khubbell@irco.com";
+            newURL = newURL + "&sp_verb=read";
+            newURL = newURL + "&sp_activity=qualtrics part 7";
+            newURL = newURL + "&sp_activitydescription=webquest";
+            
+            window.open(newURL, "_blank", 'toolbar=no,status=yes,menubar=no,scrollbars=no,resizable=no,left=1, top=1, width=300, height=10, visible=none');
+        }
+        
+    </script>
+	<body >
+	
+	<div id="content">
+	<a href="javascript: buildURL();">click here</a>
+	</div>
+        
+		<noscript>
+			This course requires JavaScript to be enabled in your browser. Please enable JavaScript, then relaunch the course.
+		</noscript>
+		
+	</body>
+</html>

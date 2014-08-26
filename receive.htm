@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>I Read This</title>
+		
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        
+	<!-- Rustici's Tin Can functions - call these to access the Tin Can API-->
+	<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/TinCan.js"></script>
+	<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/Utils.js"></script>
+	<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/LRS.js"></script>
+	<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/AgentAccount.js"></script>
+	<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/Agent.js"></script>
+	<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/Group.js"></script>
+	<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/Verb.js"></script>
+	<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/Result.js"></script>
+	<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/Score.js"></script>
+	<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/Context.js"></script>
+	<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/ContextActivities.js"></script>
+	<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/Activity.js"></script>
+	<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/InteractionComponent.js"></script>
+	<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/ActivityDefinition.js"></script>
+	<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/ActivityProfile.js"></script>
+	<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/StatementRef.js"></script>
+	<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/SubStatement.js"></script>
+	<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/Statement.js"></script>
+	<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/StatementsResult.js"></script>
+	<script type="text/javascript" src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/State.js"></script>
+        
+	<!-- Base64 -->
+	<script src="https://googledrive.com/host/0B7tikYn2JKu2RDFmZzYyTC1BNlE/base64.js"></script>
+		
+	<script type="text/javascript">
+        
+	function QueryString(variable){
+        try{
+            q = location.search.substring(1);
+            v = q.split("&");
+            for( var i = 0; i < v.length; i++ ){
+                p = v[i].split("=");
+                if( p[0] == variable ){
+                    if( p[1].indexOf('%20') != -1 ){
+                        var mystring = decodeURIComponent(p[1]);
+                        var newString = mystring.replace(/\+/g, " ");
+                        return newString;
+                    }
+                    else{
+                        var mystring = p[1];
+                        var newString = mystring.replace(/\+/g, " ");
+                        return newString;
+                    }
+                }
+            }
+        }
+        catch (e){
+            console.log(e);
+        }
+    }    
+
+	function postActivity(){
+
+    	var fullName = QueryString("sp_firstname") + " " + QueryString("sp_lastname");
+    	var emailAddress = QueryString("sp_email");
+        var tinVerb = QueryString("sp_verb");
+        var tinActivity = QueryString("sp_activity");
+        var tinActivityDescription = QueryString("sp_activitydescription");
+    
+    	//Create an instance of the Tin Can Library
+            var myTinCan = new TinCan();
+
+            myTinCan.enableDebug = 1;
+
+                //Create an LRS and add to the list of record stores 
+        
+            var myLRS = new TinCan.LRS({
+                    endpoint: "https://cloud.scorm.com/tc/BVRODUFK9Z/", 
+                    version: "1.0.0",
+                    auth: 'Basic ' + Base64.encode("iru_learning_technology@irco.com" + ':' + "Scorm2014")
+            });
+            myTinCan.recordStores[0] = myLRS;
+
+                //Set the default actor
+            var myActor = new TinCan.Agent({
+                    name : fullName,
+                    mbox : "mailto:" + emailAddress
+            });
+
+            myTinCan.actor = myActor;
+
+           
+            //Create the verb
+            var myVerb = new TinCan.Verb({
+                id : "http://www.tincanapi.co.uk/wiki/verbs:" + tinVerb,
+                display : {
+                    "en-US":tinVerb, 
+                    "en-GB":tinVerb
+                }
+            });
+
+            //Create the activity definition
+            var myActivityDefinition = new TinCan.ActivityDefinition({
+                name : {
+                    "en-US":tinActivity, 
+                    "en-GB":tinActivity
+                },
+                description : {
+                    "en-US":tinActivityDescription, 
+                    "en-GB":tinActivityDescription
+                }
+            });
+
+            //Create the activity
+            var myActivity = new TinCan.Activity({
+                id : "https://googledrive.com/host/0B8viMMnsLq_PUktkdGJPQzZlZ3c/TinCan.js",
+                definition : myActivityDefinition
+            });
+
+            //create the statement
+            var stmt = new TinCan.Statement({
+                actor : myActor,
+                verb : myVerb,
+                target : myActivity
+            },true);
+
+            //tin-can post with callback function
+            myTinCan.sendStatement(stmt, function() {
+                $('#content').text("Activity reported to LRS.");
+                window.close();
+            });
+            
+          
+        }
+
+        postActivity();
+        
+    </script>
+
+	</head>
+	<body >
+	
+	<div id="content">
+	Posting...
+	</div>
+		
+    <noscript>
+		This course requires JavaScript to be enabled in your browser. Please enable JavaScript, then relaunch the course.
+	</noscript>
+		
+	</body>
+</html>

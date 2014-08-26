@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html>
+<!--/* Copyright � 2003-2011 Rustici Software, LLC  All Rights Reserved. www.scorm.com - See LICENSE.txt for usage restrictions */-->
+	<head>
+		<title></title>
+		<style type="text/css">
+	body {
+		margin-left: 0px;
+		margin-top: 0px;
+		margin-right: 0px;
+		margin-bottom: 0px;
+		background-color:#BBB;
+	}
+
+	</style>
+
+		<script language="JavaScript1.2" src="scormdriver.js"></script>
+		<script language="JavaScript1.2">
+
+		var strContentLocation = "https://irco.qualtrics.com/SE/?SID=SV_dh8lwWwXzNG3zsp";		
+
+		function LoadContent(){
+
+			var idiv = document.createElement("DIV");
+			idiv.setAttribute("src", strContentLocation);
+			idiv.setAttribute("marginLeft","auto");
+			idiv.setAttribute("marginRight","auto");
+			
+   			var ifrm = document.createElement("IFRAME"); 
+   			ifrm.setAttribute("src", strContentLocation); 
+			ifrm.setAttribute("name", "scormdriver_content"); 
+			
+var w = 660;
+
+if( navigator.userAgent.match(/Android/i)
+ || navigator.userAgent.match(/webOS/i)
+ || navigator.userAgent.match(/iPhone/i)
+ || navigator.userAgent.match(/iPod/i)
+ || navigator.userAgent.match(/BlackBerry/i)
+ || navigator.userAgent.match(/Windows Phone/i)
+ ){
+   	w = 320;
+   	ifrm.style.width= (w + 2) + "px";
+	ifrm.style.height= "400px";
+} else {
+
+	ifrm.style.width= (w + 4) + "px";
+	ifrm.style.height= "810px";
+
+}
+			
+			idiv.setAttribute("width", "70%");
+
+   			document.body.appendChild(idiv);
+			idiv.appendChild(ifrm);
+
+		}
+
+		function listener(event) {
+  			if (event.data == 'complete'){
+    				//This is the last page so set it complete
+				//alert("complete");
+    				SetReachedEnd();
+    				CommitData(); 
+  			} else {
+				//alert(event.data + "% complete.");
+        			//SetObjectiveProgressMeasure(event.data);
+  			}
+		}
+
+		if (window.addEventListener){
+  			addEventListener("message", listener, false)
+		} else {
+  			attachEvent("onmessage", listener)
+		}
+
+	</script>
+	
+	</head>
+	<body onload="Start()" onbeforeunload="Unload()" onunload="Unload()" >
+	</body>
+</html>
